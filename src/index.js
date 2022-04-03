@@ -5,6 +5,7 @@ const authRoutes = require('./routes/auth')
 const categoryRoutes = require('./routes/category')
 const productRoutes = require('./routes/product')
 const cartRoutes = require('./routes/cart')
+const page = require('./routes/page')
 const initialDataRoutes = require('./routes/initialData')
 const path = require('path');
 const cors = require('cors');
@@ -20,6 +21,7 @@ app.use('/api',authRoutes);
 app.use('/api/category',categoryRoutes);
 app.use('/api/product',productRoutes);
 app.use('/api/cart',cartRoutes);
+app.use('/api/page',page);
 app.use('/api',initialDataRoutes);
 
 app.get('/',(req,res,next)=>{
