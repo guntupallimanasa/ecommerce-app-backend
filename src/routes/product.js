@@ -51,8 +51,9 @@ router.post('/create', requireSignin, upload.array('productPicture'), (req, res)
   });
 })
 
-router.get('/:slug', (req, res) => {
+router.get('/products/:slug', (req, res) => {
   const { slug } = req.params;
+  console.log('>>slug>>',slug)
   Category.findOne({ slug })
     .select('_id')
     .exec((error, category) => {
@@ -78,7 +79,21 @@ router.get('/:slug', (req, res) => {
     })
 })
 
+router.get('/product/:productId', (req, res) => {
+  const { productId } = req.params;
 
+  if (productId) {
+    Product.findOne({ _id: productId })
+      .exec((error, product) => {
+        if (error) return res.status(400).json({ error });
+        if (product) {
+          res.status(200).json({ product })
+        }
+      })
+  } else {
+    if (error) return res.status(400).json({ error: "Params Required" });
+  }
+})
 
 module.exports = router;
 

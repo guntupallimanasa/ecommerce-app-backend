@@ -19,7 +19,8 @@ app.use("/public", express.static(path.join(__dirname, "uploads")));
 
 app.use('/api',authRoutes);
 app.use('/api/category',categoryRoutes);
-app.use('/api/product',productRoutes);
+app.use('/api/',productRoutes);
+app.use('/api/',productRoutes);
 app.use('/api/cart',cartRoutes);
 app.use('/api/page',page);
 app.use('/api',initialDataRoutes);
