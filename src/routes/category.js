@@ -114,7 +114,6 @@ router.post('/updateCategories', upload.array('categoryImage'), async (req, res)
 router.post('/deleteCategories', async (req, res) => {
 
     const { ids } = req.body.payload;
-    console.log('>>ids', ids)
     const deletedCategories = [];
     for (let i = 0; i < ids.length; i++) {
         const deleteCategory = await Category.findOneAndDelete({ _id: ids[i]._id });

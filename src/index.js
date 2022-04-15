@@ -5,7 +5,10 @@ const authRoutes = require('./routes/auth')
 const categoryRoutes = require('./routes/category')
 const productRoutes = require('./routes/product')
 const cartRoutes = require('./routes/cart')
-const page = require('./routes/page')
+const pageRoutes = require('./routes/page')
+const orderRoutes = require('./routes/order')
+const adminOrderRoutes = require('./routes/adminOrderRoutes')
+const addressRoutes = require('./routes/address')
 const initialDataRoutes = require('./routes/initialData')
 const path = require('path');
 const cors = require('cors');
@@ -20,10 +23,12 @@ app.use("/public", express.static(path.join(__dirname, "uploads")));
 app.use('/api',authRoutes);
 app.use('/api/category',categoryRoutes);
 app.use('/api/',productRoutes);
-app.use('/api/',productRoutes);
 app.use('/api/cart',cartRoutes);
-app.use('/api/page',page);
+app.use('/api/page',pageRoutes);
 app.use('/api',initialDataRoutes);
+app.use('/api',addressRoutes);
+app.use('/api/order',orderRoutes);
+app.use('/api/adminOrder',adminOrderRoutes);
 
 app.get('/',(req,res,next)=>{
     res.status(200).json({

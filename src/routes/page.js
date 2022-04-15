@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({ storage })
+
 router.post('/createPage', upload.fields([
     { name: 'banners' },
     { name: 'products' },

@@ -25,13 +25,10 @@ router.post('/create', requireSignin, upload.array('productPicture'), (req, res)
   let productPictures = [];
 
   if (req.files.length > 0) {
-    console.log('>>>req.length', req.files.length)
     productPictures = req.files.map((file) => {
-      console.log('>>>loc', file)
       return { img: file.filename };
     });
   }
-  console.log('>>>>.category', category)
   const product = new Product({
     name: name,
     slug: slugify(name),
@@ -53,27 +50,37 @@ router.post('/create', requireSignin, upload.array('productPicture'), (req, res)
 
 router.get('/products/:slug', (req, res) => {
   const { slug } = req.params;
-  console.log('>>slug>>',slug)
   Category.findOne({ slug })
-    .select('_id')
+    .select('_id type')
     .exec((error, category) => {
       if (error) return res.status(400).json({ error });
       if (category) {
         Product.find({ category: category._id })
           .exec((error, products) => {
             if (error) return res.status(400).json({ error });
-
-            if (products.length > 0) {
-              res.status(200).json({
-                products,
-                productsByPrice: {
-                  under5K: products.filter(prod => prod.price <= 5000),
-                  under10K: products.filter(prod => prod.price > 5000 && prod.price <= 10000),
-                  under15K: products.filter(prod => prod.price > 10000 && prod.price <= 15000),
-                  under20K: products.filter(prod => prod.price > 15000 && prod.price <= 20000),
-                }
-              });
+            if(category.type){
+              if (products.length > 0) {
+                res.status(200).json({
+                  products,
+                  priceRange: {
+                    under5k: 5000,
+                    under10k: 10000,
+                    under15k: 15000,
+                    under20k: 20000,
+                    under30k: 30000,
+                  },
+                  productsByPrice: {
+                    under5K: products.filter(prod => prod.price <= 5000),
+                    under10K: products.filter(prod => prod.price > 5000 && prod.price <= 10000),
+                    under15K: products.filter(prod => prod.price > 10000 && prod.price <= 15000),
+                    under20K: products.filter(prod => prod.price > 15000 && prod.price <= 20000),
+                  }
+                });
+              }
+            }else{
+              res.status(200).json({products});
             }
+           
           })
       }
     })
@@ -94,6 +101,30 @@ router.get('/product/:productId', (req, res) => {
     if (error) return res.status(400).json({ error: "Params Required" });
   }
 })
+
+router.delete('/product/deleteProductById',requireSignin, (req, res) => {
+  const { productId } = req.body.payload;
+  if (productId) {
+    Product.deleteOne({ _id: productId }).exec((error, result) => {
+      if (error) return res.status(400).json({ error });
+      if (result) {
+        res.status(202).json({ result });
+      }
+    });
+  } else {
+    res.status(400).json({ error: "Params required" });
+  }
+})
+
+router.post('/product/getProducts',requireSignin,async (req, res) => {
+  const products = await Product.find({ createdBy: req.user._id })
+  .select("_id name price quantity slug description productPictures category")
+  .populate({ path: "category", select: "_id name" })
+  .exec();
+
+res.status(200).json({ products });
+})
+
 
 module.exports = router;
 

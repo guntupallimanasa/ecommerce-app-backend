@@ -57,7 +57,6 @@ router.post('/addtocart', requireSignin, (req, res) => {
                 .catch((error) => res.status(400).json({ error }));
         } else {
             //if cart not exist then create a new cart
-            console.log('>>>?????req.body.cartItems',req.body.cartItems)
             const cart = new Cart({
                 user: req.user._id,
                 cartItems: req.body.cartItems,
@@ -82,7 +81,6 @@ router.post('/getCartItems', requireSignin, (req, res) => {
       if (error) return res.status(400).json({ error });
       if (cart) {
         let cartItems = {};
-        console.log('>>>cart.cartItems', cart.cartItems)
         cart.cartItems.forEach((item, index) => {
             if(item.product == null){
                 return cartItems;
